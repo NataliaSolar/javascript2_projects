@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<style>
+#container {
+  width: 400px;
+  height: 400px;
+  position: relative;
+  background: yellow;
+}
+#animate {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  background-color: red;
+}
+</style>
+<body>
+
+<p><button onclick="myMove()">Click Me</button></p> 
+
+<div id ="container">
+  <div id ="animate"></div>
+</div>
+
+<script>
+function myMove() {
+  // Solar Team
+//Natalia Solar
+//Game of life
+
+
+const  ALIVE = 1;
+const DEAD = 0;
+const maxX = 60;
+const maxY = 40;
+//private static Random rng = new Random();
+
+quit = false;
+numMilliseconds = 100;
+
+//int[,] currentGrid = new int[maxX, maxY];
+//int[,] newGrid = new int[maxX, maxY];
+let currentGrid = [];
+let newGrid = [];
+
+InitializeTheGrid(newGrid); 
+//DisplayTheGrid(newGrid);
+//const cloneFood = JSON.parse(JSON.stringify(food));
+
+while(true)
+{
+    currentGrid = JSON.parse(JSON.stringify(newGrid));
+
+    DisplayTheGrid(currentGrid);
+
+    for (let y = 1; y < maxY - 1; y++)
+    {
+        for (let x = 1; x < maxX - 1; x++)
+        {
+            let neighbors = AliveNeighborsNumber(currentGrid, x, y);
+
+            ApplyRulesOfLife(currentGrid, newGrid, x, y, neighbors);
+        }
+    }
+
+    addEventListener('keydown', (event) => {
+        switch (event.key)
+        {
+            case 'q'||'Q':
+                quit = true;
+                break;
+            case 'r'||'R':
+                InitializeTheGrid(newGrid);
+                break;
+            case 'f'||'F':
+                FillUpEveryCell(newGrid);
+                break;
+            default:
+                break;
+        }
+    });
+
+    // if (Console.KeyAvailable)
+    // {
+    //     ConsoleKey key = Console.ReadKey(true).Key;
+    //     switch (key)
+    //     {
+    //         case ConsoleKey.Q:
+    //             quit = true;
+    //             break;
+    //         case ConsoleKey.R:
+    //             InitializeTheGrid(newGrid);
+    //             break;
+    //         case ConsoleKey.F:
+    //             FillUpEveryCell(newGrid);
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
+
+    if (quit)
+        break;
+
+    //Thread.Sleep(numMilliseconds);
+}
+
+
+function InitializeTheGrid(grid)
+{
+    //if (grid == null) throw new ArgumentNullException("Null argument passed.");
+    for (let y = 0; y < maxY; y++)
+    {
+        if (Math.floor(Math.random()*101) < 20)//if (rng.Next(100) < 20)
+                grid.push([ALIVE]);
+            else
+                grid.push([DEAD]);
+
+        for (let x = 0; x < maxX; x++)
+        {
+            if (Math.floor(Math.random()*101) < 20)//if (rng.Next(100) < 20)
+                grid[y].push(ALIVE);
+            else
+                grid[y].push(DEAD);
+        }
+    }
+}
+
+        
+function DisplayTheGrid(grid)
+{
+    //if (grid == null) throw new ArgumentNullException("Null argument passed.");
+    let line;
+    for (let y = 0; y < maxY; y++)
+    {
+        line = "";
+        for (let x = 0; x < maxX; x++)
+        {
+            // line += grid[x][y] === ALIVE ? "*" : " ";
+            if(grid[y][x] === ALIVE) line +="*";
+            else line +=" ";
+        }
+        console.log(line);
+    }
+}
+
+
+function FillUpEveryCell(grid)
+{
+    //if (grid == null) throw new ArgumentNullException("Null argument passed.");
+    for (let y = 0; y < maxY; y++)
+    {
+        grid.push([ALIVE]);
+        for (let x = 0; x < maxX; x++)
+        {
+            grid[y].push(ALIVE) ;
+        }
+    }
+}
+
+
+function AliveNeighborsNumber(grid, x, y)
+{
+    //if (grid == null) throw new ArgumentNullException("Null argument passed.");
+    let neighbors = 0;
+    for (let i = -1; i <= 1; i++)
+    {
+        for (let j = -1; j <= 1; j++)
+        {
+            neighbors += grid[y + i][x + j];
+        }
+    }
+
+    neighbors -= grid[y][x];
+    return neighbors;
+}
+
+function ApplyRulesOfLife(currentGrid, newGrid, x, y, neighbors)
+{
+    //if (currentGrid == null || newGrid == null) throw new ArgumentNullException("Null argument passed.");
+    if ((currentGrid[y][x] === ALIVE) && (neighbors < 2))
+        newGrid[y][x] = DEAD;
+    else if ((currentGrid[y][x] === ALIVE) && (neighbors > 3))
+        newGrid[y][x] = DEAD;
+    else if ((currentGrid[y][x] === DEAD) && (neighbors == 3))
+        newGrid[y][x] = ALIVE;
+    else
+        newGrid[y][x] = currentGrid[y][x];
+}
+ 
+}
+</script>
+
+</body>
+</html>
